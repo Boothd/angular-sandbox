@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Web Service</title>
+
+<style type="text/css">
+</style>
+
+<script
+	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular-route.min.js"></script>
+
+<script type="text/javascript">
+
+	var app = angular.module('simple',[]);
+
+
+	
+	
+	var f1Controller = function($scope, $http){
+		var onComplete = function(response){
+			$scope.drivers = response.data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+		  };
+
+		var onError = function(error){
+			$scope.error = "ERROR";
+		  };
+			$http.get("http://ergast.com/api/f1/2013/driverStandings.json" )
+	.then(onComplete, onError);
+			$scope.message = "hello";
+	};
+
+	var githubController = function($scope, $http){
+		var onComplete = function(response){
+			$scope.user = response.data;
+		  };
+
+		var onError = function(error){
+			$scope.error = "ERROR";
+		  };
+			$http.get("https://api.github.com/users/robconery" )
+	.then(onComplete, onError);
+	};
+
+	
+	app.controller("f1Controller",f1Controller);
+	app.controller("githubController",githubController);
+</script>
+</head>
+
+<body data-ng-app>
+	<div data-ng-controller="f1Controller">
+
+		{{message}}
+
+		<table>
+			<thead>
+				<tr>
+					<th colspan="4">Drivers Championship Standings</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr data-ng-repeat="driver in drivers">
+					<td>{{$index + 1}}</td>
+					<td>
+						<!--  <img src="img/flags/{{driver.Driver.nationality}}.png" />-->
+						{{driver.Driver.givenName}}&nbsp;{{driver.Driver.familyName}}
+					</td>
+					<td>{{driver.Constructors[0].name}}</td>
+					<td>{{driver.points}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+<br/>
+<br/>
+	<div data-ng-controller="githubController">
+
+	{{user.login}}
+	</div>
+
+</body>
